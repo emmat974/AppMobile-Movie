@@ -31,7 +31,9 @@ class _ListMovieState extends State<ListMovie> {
             },
             child: GridTile(
               child: Image.network(
-                  "https://image.tmdb.org/t/p/w200${movie.posterPath}",
+                  (movie.posterPath == ""
+                      ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFMajTZbAQY6npCl8mKCCgtcpHrDjFFwTOqtCd_TzlRY_ombudyD5Y_jxWFOiGJz-hzO4&usqp=CAU"
+                      : "https://image.tmdb.org/t/p/w200${movie.posterPath}"),
                   fit: BoxFit.cover),
               footer: GridTileBar(
                 backgroundColor: Colors.black12,
