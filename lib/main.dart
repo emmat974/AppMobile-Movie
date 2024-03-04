@@ -94,7 +94,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       // On initialise son état
                       setState(() {
                         currentMovieText = "";
-                        currentPage = 1;
                         currentMovieText = controller.text;
                         controller.text = "";
                         loadMovie(context);
