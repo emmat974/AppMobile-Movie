@@ -14,12 +14,14 @@ class Movies with ChangeNotifier {
     movies.clear();
   }
 
+  // Ici on hydrate nos données
   void addMoviesFromJson(Map<String, dynamic> json) {
     List<dynamic> results = json['results'];
     cleanMovie();
     pagesTotal = int.parse(json['total_pages'].toString());
     resultsTotal = int.parse(json['total_results'].toString());
 
+    // Ici on créer des object Movie
     for (var result in results) {
       addMovie(Movie(
         result['title'] ?? 'No Title',

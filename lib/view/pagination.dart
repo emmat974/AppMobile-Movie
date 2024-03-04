@@ -4,6 +4,7 @@ import 'package:netwish/service/api.dart';
 import 'package:provider/provider.dart';
 
 class Pagination extends StatefulWidget {
+  // Nécessite ce qu'on a recherché
   const Pagination({super.key, required this.currentMovieText});
   final String currentMovieText;
 
@@ -12,7 +13,9 @@ class Pagination extends StatefulWidget {
 }
 
 class _Pagination extends State<Pagination> {
+  // On initialise a 1;
   int currentPage = 1;
+  // var Movies
   dynamic moviesProvider;
 
   @override
@@ -21,6 +24,7 @@ class _Pagination extends State<Pagination> {
     moviesProvider = context.read<Movies>();
   }
 
+// On recherche les films et on mettre à jour l'interface
   void loadMovie(BuildContext context) {
     Api api = Api();
     setState(() {
@@ -28,6 +32,7 @@ class _Pagination extends State<Pagination> {
     });
   }
 
+// Page suivante de la pagination
   void nextPage(BuildContext context) {
     if (currentPage < moviesProvider!.pagesTotal) {
       currentPage++;
@@ -35,6 +40,7 @@ class _Pagination extends State<Pagination> {
     }
   }
 
+// Page précédent de la pagination
   void previousPage(BuildContext context) {
     if (currentPage > 1) {
       currentPage--;
@@ -42,6 +48,7 @@ class _Pagination extends State<Pagination> {
     }
   }
 
+// Affiche la pagination s'il y a des films
   @override
   Widget build(BuildContext context) {
     print("Pagination");
@@ -62,6 +69,7 @@ class _Pagination extends State<Pagination> {
           ]);
   }
 
+// Le style de bouton pour éviter de répéter le code plusieurs fois
   ElevatedButton paginationButton(VoidCallback onPressed, String text) {
     return ElevatedButton(
       onPressed: onPressed,

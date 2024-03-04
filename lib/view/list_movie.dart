@@ -21,6 +21,7 @@ class _ListMovieState extends State<ListMovie> {
       itemCount: moviesProvider.movies.length,
       itemBuilder: (context, index) {
         final movie = moviesProvider.movies[index];
+        // On affiche la liste des films et on créer action pour basculé vers un film
         return InkWell(
             onTap: () {
               Navigator.of(context).push(

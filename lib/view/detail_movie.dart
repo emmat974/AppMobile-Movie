@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:netwish/model/Movie.dart';
 
 class DetailMovie extends StatelessWidget {
+  // Nécessite un objet movie
   final Movie movie;
   const DetailMovie({super.key, required this.movie});
 
+// On affiche un film par rapport à Movie
   @override
   Widget build(BuildContext context) {
     return Scaffold(

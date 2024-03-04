@@ -36,8 +36,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  // On appel le controller pour input
   final controller = TextEditingController();
-  int currentPage = 1;
+  // La barre de recherche qu'on va transmettre à la pagination
   String currentMovieText = "";
 
   @override
@@ -57,12 +58,15 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.black,
         appBar: AppBar(
           backgroundColor: const Color.fromARGB(221, 24, 24, 24),
+          // Logo de Netflix alias Netwish
           leading: Padding(
               padding: const EdgeInsets.all(4),
               child: Image.asset("images/netflix_logo.png")),
+          // Le superbe titre que tout le monde ADORE !
           title:
               Text(widget.title, style: const TextStyle(color: Colors.white)),
           actions: [
+            // On appel notre barre de recherche ici
             InkWell(
                 onTap: () => {_dialogSearch(context)},
                 child: const Icon(Icons.search))
@@ -70,12 +74,13 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: Column(
           children: [
-            const Expanded(child: ListMovie()),
-            Pagination(currentMovieText: currentMovieText)
+            const Expanded(child: ListMovie()), // On affiche la liste des films
+            Pagination(currentMovieText: currentMovieText) // On affiche sa pagination
           ],
         ));
   }
 
+// On appel la barre de recherche
   Future<void> _dialogSearch(BuildContext context) {
     return showDialog(
         context: context,
@@ -86,6 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
               actions: [
                 TextButton(
                     onPressed: () {
+                      // On initialise son état
                       setState(() {
                         currentMovieText = "";
                         currentPage = 1;
@@ -100,8 +106,9 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
+// On recherche l'api pour la barre de recherche
   void loadMovie(BuildContext context) {
     Api api = Api();
-    api.fetchMovie(currentMovieText, context, currentPage);
+    api.fetchMovie(currentMovieText, context, 1);
   }
 }

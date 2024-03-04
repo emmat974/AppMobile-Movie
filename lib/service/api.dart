@@ -9,6 +9,7 @@ class Api {
   static String key = "26a145d058cf4d1b17cbf084ddebedec";
   static String uri = "https://api.themoviedb.org/3/search/movie";
 
+// Ici on appel l'api selon sa key, sa recherche, la langue et la page courarnt
   Future<void> fetchMovie(
       String search, BuildContext context, int currentPage) async {
     final moviesProvider = context.read<Movies>();
