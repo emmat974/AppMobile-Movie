@@ -36,6 +36,15 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final controller = TextEditingController();
+  int currentPage = 1;
+  String currentMovieText = "";
+  dynamic moviesProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    moviesProvider = context.read<Movies>();
+  }
 
   @override
   void dispose() {
@@ -57,7 +66,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: const Icon(Icons.search))
           ],
         ),
-        body: const ListMovie());
+        body: Column(
+          children: [const Expanded(child: ListMovie()), pagination(context)],
+        ));
   }
 
   Future<void> _dialogSearch(BuildContext context) {
@@ -70,13 +81,68 @@ class _MyHomePageState extends State<MyHomePage> {
               actions: [
                 TextButton(
                     onPressed: () {
-                      Api api = Api();
-                      api.fetchMovie(controller.text, context);
+                      currentMovieText = "";
+                      currentPage = 1;
+                      currentMovieText = controller.text;
                       controller.text = "";
+                      loadMovie(context);
                       Navigator.of(context).pop();
                     },
                     child: const Text("Valider"))
               ]);
         });
+  }
+
+  void loadMovie(BuildContext context) {
+    Api api = Api();
+    setState(() {
+      api.fetchMovie(currentMovieText, context, currentPage);
+    });
+  }
+
+  void nextPage(BuildContext context) {
+    if (currentPage < moviesProvider!.pagesTotal) {
+      currentPage++;
+      loadMovie(context);
+    }
+  }
+
+  void previousPage(BuildContext context) {
+    if (currentPage > 1) {
+      currentPage--;
+      loadMovie(context);
+    }
+  }
+
+  Widget pagination(BuildContext context) {
+    return moviesProvider.movies.isEmpty
+        ? Container()
+        : Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            if (currentPage > 1)
+              paginationButton(
+                  () => currentPage > 1 ? previousPage(context) : null,
+                  "Précédent"),
+            if (currentPage < moviesProvider!.pagesTotal)
+              paginationButton(
+                  () => currentPage <= moviesProvider!.pagesTotal
+                      ? nextPage(context)
+                      : null,
+                  "Suivant"),
+          ]);
+  }
+
+  ElevatedButton paginationButton(VoidCallback onPressed, String text) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      child: Text(text),
+      style: ElevatedButton.styleFrom(
+        primary: Colors.black,
+        onPrimary: Colors.white,
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    );
   }
 }

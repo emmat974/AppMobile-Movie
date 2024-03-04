@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 class Movies with ChangeNotifier {
   List<Movie> movies = [];
+  int pagesTotal = 1;
+  int resultsTotal = 1;
 
   void addMovie(Movie movie) {
     movies.add(movie);
@@ -15,6 +17,9 @@ class Movies with ChangeNotifier {
   void addMoviesFromJson(Map<String, dynamic> json) {
     List<dynamic> results = json['results'];
     cleanMovie();
+    pagesTotal = int.parse(json['total_pages'].toString());
+    resultsTotal = int.parse(json['total_results'].toString());
+
     for (var result in results) {
       addMovie(Movie(
         result['title'] ?? 'No Title',
