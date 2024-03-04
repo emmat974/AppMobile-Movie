@@ -72,6 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     onPressed: () {
                       Api api = Api();
                       api.fetchMovie(controller.text, context);
+                      controller.text = "";
                       Navigator.of(context).pop();
                     },
                     child: const Text("Valider"))
