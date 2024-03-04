@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:netwish/model/Genre.dart';
+import 'package:netwish/model/Genres.dart';
 import 'package:netwish/model/Movies.dart';
 import 'package:netwish/service/api.dart';
 import 'package:netwish/view/list_movie.dart';
@@ -8,6 +10,7 @@ import 'package:provider/provider.dart';
 void main() {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => Movies()),
+    ChangeNotifierProvider(create: (_) => Genres())
   ], child: const MyApp()));
 }
 
@@ -40,10 +43,15 @@ class _MyHomePageState extends State<MyHomePage> {
   final controller = TextEditingController();
   // La barre de recherche qu'on va transmettre à la pagination
   String currentMovieText = "";
+  late List<Genre> genres;
+  List<Genre> selectedGenre = [];
 
   @override
   void initState() {
     super.initState();
+    Api api = Api();
+    api.fetchGenre(context);
+    api.homeMovie(context);
   }
 
   @override
@@ -74,8 +82,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: Column(
           children: [
-            const Expanded(child: ListMovie()), // On affiche la liste des films
-            Pagination(currentMovieText: currentMovieText) // On affiche sa pagination
+            Expanded(
+                child: ListMovie(
+                    selectedGenre:
+                        selectedGenre)), // On affiche la liste des films
+            Pagination(
+                currentMovieText: currentMovieText) // On affiche sa pagination
           ],
         ));
   }
@@ -87,22 +99,50 @@ class _MyHomePageState extends State<MyHomePage> {
         builder: (context) {
           return AlertDialog(
               title: const Text("Rechercher un film"),
-              content: TextField(controller: controller),
+              content: StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setState) {
+                return Column(mainAxisSize: MainAxisSize.min, children: [
+                  TextField(controller: controller),
+                  dropdownList(context, setState),
+                  for (var genre in selectedGenre)
+                    Chip(
+                        label: Text(genre.name),
+                        onDeleted: () {
+                          setState(() {
+                            selectedGenre.remove(genre);
+                          });
+                        }),
+                ]);
+              }),
               actions: [
                 TextButton(
                     onPressed: () {
                       // On initialise son état
                       setState(() {
-                        currentMovieText = "";
                         currentMovieText = controller.text;
-                        controller.text = "";
                         loadMovie(context);
                       });
                       Navigator.of(context).pop();
                     },
-                    child: const Text("Valider"))
+                    child: const Text("Valider")),
               ]);
         });
+  }
+
+  DropdownButton dropdownList(BuildContext context, StateSetter setState) {
+    final genresProvider = context.read<Genres>();
+    return DropdownButton(
+        items: genresProvider.genres
+            .map((genre) =>
+                DropdownMenuItem(value: genre, child: Text(genre.name)))
+            .toList(),
+        onChanged: (value) {
+          setState(() {
+            print("je passe bien ici");
+            selectedGenre.add(value as Genre);
+          });
+        },
+        hint: const Text("Selectionner un genre"));
   }
 
 // On recherche l'api pour la barre de recherche

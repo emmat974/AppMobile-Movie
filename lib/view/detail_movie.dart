@@ -28,6 +28,7 @@ class DetailMovie extends StatelessWidget {
                     : "https://image.tmdb.org/t/p/w200${movie.posterPath}"),
                 fit: BoxFit.cover,
               ),
+              listGenre(),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
@@ -38,5 +39,21 @@ class DetailMovie extends StatelessWidget {
             ],
           ),
         ));
+  }
+
+  Widget listGenre() {
+    return Wrap(
+      spacing: 8.0, // Espacement horizontal entre les chips
+      runSpacing: 4.0, // Espacement vertical entre les lignes
+      children: List<Widget>.generate(
+        movie.genres.length,
+        (int index) {
+          return Chip(
+            label: Text(movie.genres[index].name),
+            // Vous pouvez ajouter d'autres propriétés comme la suppression ou l'action sur le chip
+          );
+        },
+      ),
+    );
   }
 }
